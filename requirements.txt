@@ -1,0 +1,2 @@
+Flox-lib==0.19.6
+websocket-client==1.5.2

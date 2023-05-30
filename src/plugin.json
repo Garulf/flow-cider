@@ -1,0 +1,12 @@
+{
+  "ID": "552e8fc4a1674f04a2e78f821d3a252c",
+  "ActionKeyword": "fc",
+  "Name": "Flow Cider",
+  "Description": "Control the Cider classic app",
+  "Author": "Garulf",
+  "Version": "0.0.1",
+  "Language": "python",
+  "Website": "https://github.com/Garulf/flow-cider",
+  "IcoPath": "icon.png",
+  "ExecuteFileName": "flow-cider.pyz"
+}
