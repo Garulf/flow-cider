@@ -33,6 +33,7 @@ jobs:
           python ./bin/build.py --zip
       - name: Find zip file
         id: find
+        shell: bash
         run: |
           echo "::set-output name=prop::$(find . -name '*.zip')"
       - name: Get version
