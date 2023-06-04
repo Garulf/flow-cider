@@ -41,6 +41,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('--install', action='store_true')
     parser.add_argument('--zip', action='store_true')
     parser.add_argument('--watch', action='store_true')
+    parser.add_argument('--version', action='store_true')
     return parser.parse_args()
 
 
@@ -128,13 +129,16 @@ def update_on_change(watch_path: str):
 
 def main(args: argparse.Namespace) -> None:
     global WATCHING
-    if args.watch and not WATCHING:
+    if args.watch and not WATCHING and not args.version:
         WATCHING = True
         print(f"Watching for changes in {SOURCE}...")
         update_on_change(SOURCE)
 
     else:
         p_manifest = plugin_manifest(SOURCE)
+        if args.version:
+            print(p_manifest['Version'])
+            return
         zipapp_name = create_zipapp(SOURCE, p_manifest)
         print(f'Successfully created {zipapp_name}!')
         if args.zip:
