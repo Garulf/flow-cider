@@ -3,11 +3,10 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
-      - main
       - dev
+      - rc
     tags-ignore:
-      - "v*"
+      - "*"
     paths-ignore:
       - .github/workflows/*
       - README.md

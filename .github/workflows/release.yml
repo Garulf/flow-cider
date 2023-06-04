@@ -1,2 +1,12 @@
+# trigger on release thats not a prerelease
 on:
-    release:
+  release:
+    types: [published]
+jobs:
+  publish:
+    if: "!github.event.release.prerelease"
+    uses: ./.github/workflows/publish.yml
+    with:
+      python-version: 3.8
+    permissions:
+      contents: write
