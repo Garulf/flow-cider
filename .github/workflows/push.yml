@@ -1,0 +1,22 @@
+name: "Release-Builder"
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    tags-ignore:
+      - "v*"
+    paths-ignore:
+      - .github/workflows/*
+      - README.md
+      - assets/*
+env:
+  PYTHON_VER: 3.8
+jobs:
+  deps:
+    name: "Build"
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: ./.github/actions/action.yml
+permissions:
+  contents: write
