@@ -4,7 +4,7 @@
     "Name": "Flow Cider",
     "Description": "Control the Cider classic app",
     "Author": "Garulf",
-    "Version": "1.0.1-rc.1",
+    "Version": "1.0.1",
     "Language": "python",
     "Website": "https://github.com/Garulf/flow-cider",
     "IcoPath": "icon.png",
