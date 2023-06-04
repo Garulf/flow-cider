@@ -12,13 +12,7 @@ on:
 env:
   PYTHON_VER: 3.8
 jobs:
-  deps:
-    name: "Build"
-    runs-on: windows-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Action
-        uses: ./.github/actions/release
-permissions:
-  contents: write
+  publish:
+    uses: ./.github/workflows/publish.yml
+    with:
+      python-version: 3.8
