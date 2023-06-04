@@ -7,8 +7,6 @@ inputs:
     description: "Version range or exact version of a Python version to use, using SemVer's version range syntax."
     default: "3.x"
 runs:
-  - name: Checkout
-    uses: actions/checkout@v2
   - name: Setup Python
     uses: actions/setup-python@v2
     with:

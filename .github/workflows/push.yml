@@ -17,6 +17,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
+        uses: actions/checkout@v2
+      - name: Action
         uses: ./.github/actions/action.yml
 permissions:
   contents: write
