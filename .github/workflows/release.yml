@@ -40,7 +40,7 @@ jobs:
       - name: Find zip file
         id: find
         run: |
-          echo "prop=$(find . -name '*.zip' -print0 | xargs -0 ls -t | head -1)" >> $GITHUB_ENV
+          echo "prop=$(ls -t **/*.zip | head -1)" >> $GITHUB_ENV
       - name: Get version
         id: version
         run: |
