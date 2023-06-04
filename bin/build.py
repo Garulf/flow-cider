@@ -1,7 +1,5 @@
-import glob
 import json
 import time
-from tkinter import W
 from typing import TypedDict, Union
 from pathlib import Path
 import subprocess
@@ -145,6 +143,8 @@ def main(args: argparse.Namespace) -> None:
         if args.install:
             install_dir = install_plugin(p_manifest, DIST)
             print(f'Successfully installed to: {install_dir}!')
+        # print bell
+        print('\a')
 
 
 if __name__ == "__main__":
