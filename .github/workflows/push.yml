@@ -19,6 +19,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Action
-        uses: ./.github/actions/action.yml
+        uses: ./.github/actions/action.yml@main
 permissions:
   contents: write
