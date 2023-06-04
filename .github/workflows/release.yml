@@ -45,7 +45,6 @@ jobs:
         id: version
         run: |
           echo "::set-output name=prop::$(python ./bin/build.py --version)"
-      - name: Get release tags
       - name: Publish
         uses: softprops/action-gh-release@v1
         with:
