@@ -16,5 +16,5 @@ jobs:
     uses: ./.github/workflows/publish.yml
     with:
       python-version: 3.8
-permissions:
-  contents: write
+    permissions:
+      contents: write
