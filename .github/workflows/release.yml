@@ -1,0 +1,40 @@
+name: "Release-Builder"
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    tags-ignore:
+      - "v*"
+    paths-ignore:
+      - .github/workflows/*
+      - README.md
+      - assets/*
+env:
+  PYTHON_VER: 3.8
+jobs:
+  deps:
+    name: "Build"
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.PYTHON_VER }}
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements_dev.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install Dev Dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements_dev.txt
+      - name: Build
+        shell: bash
+        run: |
+          ls -a
+          python ./bin/build.py --zip
