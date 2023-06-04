@@ -6,6 +6,8 @@
 #
 autopep8==2.0.2
     # via -r requirements_dev.in
+bump2version==1.0.1
+    # via -r requirements_dev.in
 colorama==0.4.6
     # via pytest
 exceptiongroup==1.1.1
