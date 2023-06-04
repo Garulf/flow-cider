@@ -51,5 +51,3 @@ jobs:
           tag_name: "${{ steps.version.outputs.prop }}"
           generate_release_notes: true
           prerelease: "${{ contains(steps.version.outputs.prop, 'dev') || contains(steps.version.outputs.prop, 'rc') }}"
-permissions:
-  contents: write
