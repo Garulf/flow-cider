@@ -40,11 +40,11 @@ jobs:
       - name: Find zip file
         id: find
         run: |
-          echo "::set-output name=prop::$(find . -name '*.zip' -print0 | xargs -0 ls -t | head -1)"
+          echo "prop=$(find . -name '*.zip' -print0 | xargs -0 ls -t | head -1)" >> $GITHUB_ENV
       - name: Get version
         id: version
         run: |
-          echo "::set-output name=prop::$(python ./bin/build.py --version)"
+          echo "prop=$(python ./bin/build.py --version)" >> $GITHUB_ENV
       - name: Publish
         uses: softprops/action-gh-release@v1
         with:
