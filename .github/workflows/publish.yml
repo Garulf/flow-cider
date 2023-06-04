@@ -5,9 +5,6 @@ on:
         required: false
         type: string
         default: "3.x"
-      new-version:
-        required: false
-        type: string
 jobs:
   deps:
     name: "Build"
@@ -47,7 +44,7 @@ jobs:
         with:
           draft: false
           files: "${{ steps.find.outputs.prop }}"
-          tag_name: "${{ inputs.new-version || steps.version.outputs.prop }}"
+          tag_name: "${{ steps.version.outputs.prop }}"
           generate_release_notes: true
           prerelease: "${{ contains(steps.version.outputs.prop, 'dev') || contains(steps.version.outputs.prop, 'rc') }}"
 permissions:
