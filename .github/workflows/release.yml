@@ -8,5 +8,6 @@ jobs:
     uses: ./.github/workflows/publish.yml
     with:
       python-version: 3.8
+      new-version: ${{ github.event.release.tag_name }}
     permissions:
       contents: write
