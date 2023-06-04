@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
+      - main
       - dev
       - rc
     tags-ignore:
@@ -16,7 +17,7 @@ env:
   PYTHON_VER: 3.8
 jobs:
   publish:
-    uses: ./.github/workflows/publish.yml
+    uses: ./.github/workflows/build-pub.yml
     with:
       python-version: 3.8
     permissions:
