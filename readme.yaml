@@ -1,0 +1,19 @@
+# readwright configuration. All keys are optional; autodetected values are shown.
+# Run `readwright badges` / `readwright blocks` to list badge presets and template blocks.
+template: docs/README.md.j2
+project:
+  name: Flow Cider
+  owner: Garulf
+  repo: flow-cider
+  tagline: Search Apple Music and control the Cider 1.x player from Flow Launcher.
+  ci_workflow: tests.yml
+banner:
+  image: .github/assets/hero.png
+  alt: Flow Cider hero image
+screenshots:
+  dir: .github/assets
+badges: [ci, github-release, license]
+donate: [buymeacoffee, github-sponsors]
+donate_handles:
+  buymeacoffee: garulf
+  github-sponsors: Garulf

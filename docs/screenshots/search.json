@@ -1,0 +1,43 @@
+{
+  "keyword": "fc",
+  "query": "neon",
+  "icon": "../../data/icon.png",
+  "max_results": 4,
+  "selection": 0,
+  "results": [
+    {
+      "title": "Neon Harbor",
+      "subtitle": "by The Lanterns (song)",
+      "cover": [
+        "#ff3d6e",
+        "#5b2a86"
+      ]
+    },
+    {
+      "title": "Neon Harbor (Night Drive Mix)",
+      "subtitle": "by The Lanterns (song)",
+      "cover": [
+        "#1fb6ff",
+        "#13315c"
+      ]
+    },
+    {
+      "title": "Neon Weather",
+      "subtitle": "by Paper Satellites (song)",
+      "cover": [
+        "#ffb627",
+        "#d1495b"
+      ]
+    },
+    {
+      "title": "Harbor Lights",
+      "subtitle": "by The Lanterns (album)",
+      "cover": [
+        "#ff3d6e",
+        "#5b2a86"
+      ]
+    }
+  ],
+  "query_suggestion": "",
+  "show_caret": false
+}
