@@ -155,6 +155,14 @@ def test_other_errors_are_shown(monkeypatch, server):
     assert result["Title"] == "KeyError"
 
 
+def test_unanswered_request_times_out_and_closes_the_socket(server):
+    nothing_playing = dict(SONG, playParams={"id": "no-id-found", "kind": "song"})
+    (result, *_) = results("context_menu", [nothing_playing])
+    assert result["Title"] == "TimeoutError"
+    assert server.sockets[0].timeout == main.actions.Cider().timeout
+    assert server.sockets[0].closed
+
+
 def test_python_v2_round_trip(monkeypatch, server):
     requests = [
         {"id": 1, "method": "query", "params": [{"search": "midnight", "actionKeyword": "fc"}, {}]},

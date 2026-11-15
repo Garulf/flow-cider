@@ -2,6 +2,7 @@ import copy
 import json
 
 import pytest
+import websocket
 
 import actions
 import main
@@ -33,8 +34,9 @@ class FakeSocket:
     """One websocket connection to Cider 1, which answers every action with a
     "generic" message and broadcasts typed messages for the ones that return data."""
 
-    def __init__(self, server):
+    def __init__(self, server, timeout=None):
         self.server = server
+        self.timeout = timeout
         self.inbox = []
         self.closed = False
 
@@ -45,6 +47,10 @@ class FakeSocket:
         self.inbox.extend(self.server.replies(message))
 
     def recv(self):
+        if not self.inbox:
+            if self.timeout is None:
+                raise AssertionError("recv() without a timeout would block forever")
+            raise websocket.WebSocketTimeoutException("timed out")
         return json.dumps(self.inbox.pop(0))
 
     def close(self):
@@ -62,9 +68,9 @@ class FakeCiderServer:
         self.playback = dict(copy.deepcopy(SONG), status=True)
         self.library = {"inLibrary": False, "rating": 0}
 
-    def connect(self, url, **kwargs):
+    def connect(self, url, timeout=None):
         self.url = url
-        socket = FakeSocket(self)
+        socket = FakeSocket(self, timeout)
         self.sockets.append(socket)
         return socket
 
@@ -76,7 +82,7 @@ class FakeCiderServer:
             "rating": ("rate", {"rating": message.get("rating")}),
             "change-library": ("change-library", {"add": message.get("add")}),
         }
-        if message["action"] not in typed:
+        if message["action"] not in typed or message.get("id") == "no-id-found":
             return []
         kind, data = typed[message["action"]]
         return [{"status": 0, "data": copy.deepcopy(data), "message": "OK", "type": kind}]
