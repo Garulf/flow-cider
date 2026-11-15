@@ -9,6 +9,7 @@ from .media import Media
 
 BASE_HOST = "127.0.0.1"
 BASE_PORT = 26369
+SEARCH_KINDS = ("songs", "albums")
 
 
 class Cider:
@@ -44,10 +45,11 @@ class Cider:
 
     def search(self, term: str, limit: int = 20) -> List[Media]:
         r = self._action("search", "searchResults", term=term, limit=limit)
-        media_items = []
-        if r["data"].get("songs") and r["data"].get("albums"):
-            media_items = r["data"]["songs"]["data"] + \
-                r["data"]["albums"]["data"]
+        media_items = [
+            item
+            for kind in SEARCH_KINDS
+            for item in r["data"].get(kind, {}).get("data", [])
+        ]
         return [Media(media_item["attributes"]) for media_item in media_items]
 
     def media_status(self) -> Dict[str, Any]:

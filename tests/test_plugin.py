@@ -73,6 +73,16 @@ def test_filters_that_match_nothing_say_so(server):
     assert titles("query", "midnight :by nobody") == ["No results found"]
 
 
+def test_search_with_only_songs(server):
+    del server.search_data["albums"]
+    assert titles("query", "midnight") == ["Midnight City", "Midnight Train"]
+
+
+def test_search_with_only_albums(server):
+    del server.search_data["songs"]
+    assert titles("query", "midnight") == ["Hurry Up, We're Dreaming"]
+
+
 def test_no_results(server):
     server.search_data = {}
     assert titles("query", "zzzz") == ["No results found"]
