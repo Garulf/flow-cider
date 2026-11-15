@@ -95,9 +95,14 @@ def test_trailing_colon_lists_options(server):
 
 def test_context_menu_for_unrated_song_not_in_library(server):
     assert titles("context_menu", [SONG]) == [
-        "Play next", "Play later", "Love", "Add to library", "Midnight City by M83",
+        "Play next", "Play later", "Love", "Dislike", "Add to library", "Midnight City by M83",
     ]
     assert server.sent[0] == {"action": "library-status", "type": "song", "id": "1440845291"}
+
+
+def test_context_menu_for_disliked_song(server):
+    server.library = {"inLibrary": False, "rating": -1}
+    assert titles("context_menu", [SONG])[2:4] == ["Love", "Remove rating"]
 
 
 def test_context_menu_for_loved_song_in_library(server):

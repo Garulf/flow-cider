@@ -84,7 +84,7 @@ def context_menu_results(cider: Cider, data: List[Any]) -> List[Result]:
     rating = library_status["rating"]
     if rating != 1:
         results.append(Result(title="Love", subtitle="Love this song").add_action(actions.like_media, [attributes]))
-    elif rating != -1:
+    if rating != -1:
         results.append(Result(title="Dislike", subtitle="Dislike this song").add_action(actions.dislike_media, [attributes]))
     if rating != 0:
         results.append(
