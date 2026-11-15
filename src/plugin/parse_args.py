@@ -6,8 +6,18 @@ FLAG_CHAR = ':'
 CHOICES = ["songs", "albums"]
 
 
+class QueryError(ValueError):
+    pass
+
+
+class QueryParser(argparse.ArgumentParser):
+
+    def error(self, message: str):
+        raise QueryError(message)
+
+
 def parse_args(input: str) -> Tuple[argparse.Namespace, List[argparse.Action]]:
-    parser = argparse.ArgumentParser(prefix_chars=FLAG_CHAR, add_help=False)
+    parser = QueryParser(prefix_chars=FLAG_CHAR, add_help=False)
     parser.add_argument('query', type=str, nargs='*',
                         help='Query to search for')
     parser.add_argument(':limit', type=int, default=20, nargs='?',

@@ -9,7 +9,7 @@ from pyflowlauncher.models.result import PreviewInfo
 import actions
 from cider_api.cider import Cider
 from cider_api.media import Media
-from parse_args import CHOICES
+from parse_args import CHOICES, QueryError
 
 
 def preview(image_path: str) -> PreviewInfo:
@@ -24,6 +24,8 @@ def error_results(exception: Exception) -> List[Result]:
                 subtitle="Please make sure Cider is open and running",
             ).add_action(actions.open_cider)
         ]
+    if isinstance(exception, QueryError):
+        return [Result(title="Invalid search", subtitle=str(exception))]
     return [Result(title=exception.__class__.__name__, subtitle=str(exception))]
 
 
