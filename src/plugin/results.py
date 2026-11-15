@@ -40,12 +40,12 @@ def media_result(media: Media) -> Result:
 
 
 def search_results(args: argparse.Namespace, results: List[Media]) -> List[Result]:
-    if not results:
-        return [Result(title="No results found")]
     if args.type in CHOICES:
-        results = [result for result in results if result.kind == args.type]
+        results = [result for result in results if f"{result.kind}s" == args.type]
     if args.by:
         results = [result for result in results if result.artist_name.lower() == args.by.lower()]
+    if not results:
+        return [Result(title="No results found")]
     return [media_result(result) for result in results]
 
 

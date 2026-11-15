@@ -64,6 +64,15 @@ def test_limit_and_artist_filter(server):
     assert server.sent[0]["limit"] == 5
 
 
+def test_type_filter(server):
+    assert titles("query", "midnight :type songs") == ["Midnight City", "Midnight Train"]
+    assert titles("query", "midnight :type albums") == ["Hurry Up, We're Dreaming"]
+
+
+def test_filters_that_match_nothing_say_so(server):
+    assert titles("query", "midnight :by nobody") == ["No results found"]
+
+
 def test_no_results(server):
     server.search_data = {}
     assert titles("query", "zzzz") == ["No results found"]
