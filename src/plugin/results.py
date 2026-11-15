@@ -1,126 +1,99 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Any, List
+
 import argparse
+from typing import Any, List
 
+from pyflowlauncher import Result
+from pyflowlauncher.models.result import PreviewInfo
 
-from parse_args import CHOICES
+import actions
+from cider_api.cider import Cider
 from cider_api.media import Media
-if TYPE_CHECKING:
-    from main import FlowCider
+from parse_args import CHOICES
 
 
-def exception_results(plugin: FlowCider, exception: Exception):
+def preview(image_path: str) -> PreviewInfo:
+    return PreviewInfo(PreviewImagePath=image_path, Description=None, IsMedia=False, PreviewDeligate=None)
+
+
+def error_results(exception: Exception) -> List[Result]:
     if isinstance(exception, ConnectionRefusedError):
-        plugin.add_item(
-            title="Connection Refused: Could not connect to Cider",
-            subtitle="Please make sure Cider is open and running",
-            method=plugin.open_cider,
-        )
-        return
-    raise exception
+        return [
+            Result(
+                title="Connection Refused: Could not connect to Cider",
+                subtitle="Please make sure Cider is open and running",
+            ).add_action(actions.open_cider)
+        ]
+    return [Result(title=exception.__class__.__name__, subtitle=str(exception))]
 
 
-def search_results(plugin: FlowCider, args: argparse.Namespace, results: List[Media]):
+def media_result(media: Media) -> Result:
+    return Result(
+        title=media.name,
+        subtitle=f"by {media.artist_name} ({media.kind})",
+        icon=media.artwork(32, 32),
+        context_data=[media.attributes],
+        preview=preview(media.artwork(512, 512)),
+    ).add_action(actions.play_media, [media.attributes])
+
+
+def search_results(args: argparse.Namespace, results: List[Media]) -> List[Result]:
     if not results:
-        plugin.add_item(
-            title="No results found"
-        )
-        return
+        return [Result(title="No results found")]
     if args.type in CHOICES:
-        results = [
-            result for result in results if result.kind == args.type]
+        results = [result for result in results if result.kind == args.type]
     if args.by:
-        results = [
-            result for result in results if result.artist_name.lower() == args.by.lower()]
-    for result in results:
-        plugin.add_item(
-            title=result.name,
-            subtitle=f"by {result.artist_name} ({result.kind})",
-            icon=result.artwork(32, 32),
-            method=plugin.play_media,
-            parameters=[result._attributes],
-            context=[result._attributes],
-            Preview={
-                "PreviewImagePath": result.artwork(512, 512),
-            }
-        )
+        results = [result for result in results if result.artist_name.lower() == args.by.lower()]
+    return [media_result(result) for result in results]
 
 
-def argument_results(plugin: FlowCider, args: argparse.Namespace, actions: List[argparse.Action]):
-    if " ".join(args.query).endswith(":"):
-        for action in actions:
-            if action.option_strings:
-                plugin.add_item(
-                    title=action.option_strings[0],
-                    subtitle=action.help or "",
-                )
-        return
+def argument_results(options: List[argparse.Action]) -> List[Result]:
+    return [
+        Result(title=option.option_strings[0], subtitle=option.help or "")
+        for option in options
+        if option.option_strings
+    ]
 
 
-def now_playing(plugin: FlowCider):
-    media_status = plugin.cider.media_status()
-    data = media_status.get("data")
-    if data:
-        media = Media(data)
-        plugin.add_item(
+def now_playing(cider: Cider) -> List[Result]:
+    data = cider.media_status().get("data")
+    if not data:
+        return []
+    media = Media(data)
+    return [
+        Result(
             title=str(media),
             subtitle="Now playing" if data.get("status") else "Paused",
             icon=media.artwork(32, 32),
-            method=plugin.play_pause,
-            context=[data],
-        )
+            context_data=[data],
+        ).add_action(actions.play_pause)
+    ]
 
 
-def context_menu_results(plugin: FlowCider, data: List[Any]):
-    if data:
-        plugin.add_item(
-            title="Play next",
-            subtitle="Add media to queue",
-            method=plugin.play_media_next,
-            parameters=[data[0]]
+def context_menu_results(cider: Cider, data: List[Any]) -> List[Result]:
+    if not data:
+        return []
+    attributes = data[0]
+    results = [
+        Result(title="Play next", subtitle="Add media to queue").add_action(actions.play_media_next, [attributes]),
+        Result(title="Play later", subtitle="Add media to end of queue").add_action(actions.play_media_last, [attributes]),
+    ]
+    library_status = cider.library_status(Media(attributes))["data"]
+    rating = library_status["rating"]
+    if rating != 1:
+        results.append(Result(title="Love", subtitle="Love this song").add_action(actions.like_media, [attributes]))
+    elif rating != -1:
+        results.append(Result(title="Dislike", subtitle="Dislike this song").add_action(actions.dislike_media, [attributes]))
+    if rating != 0:
+        results.append(
+            Result(title="Remove rating", subtitle="Remove rating from this song").add_action(actions.unrate_media, [attributes])
         )
-        plugin.add_item(
-            title="Play later",
-            subtitle="Add media to end of queue",
-            method=plugin.play_media_last,
-            parameters=[data[0]]
+    if library_status["inLibrary"]:
+        results.append(
+            Result(title="Remove from library", subtitle="Remove media from library").add_action(actions.toggle_library, [attributes])
         )
-        media = Media(data[0])
-        library_status = plugin.cider.library_status(media)
-        rating = library_status["data"]["rating"]
-        if rating != 1:
-            plugin.add_item(
-                title="Love",
-                subtitle="Love this song",
-                method=plugin.like_media,
-                parameters=[data[0]]
-            )
-        elif (rating != -1):
-            plugin.add_item(
-                title="Dislike",
-                subtitle="Dislike this song",
-                method=plugin.dislike_media,
-                parameters=[data[0]]
-            )
-        if rating != 0:
-            plugin.add_item(
-                title="Remove rating",
-                subtitle="Remove rating from this song",
-                method=plugin.unrate_media,
-                parameters=[data[0]]
-            )
-        if library_status["data"]["inLibrary"]:
-            plugin.add_item(
-                title="Remove from library",
-                subtitle="Remove media from library",
-                method=plugin.cider.toggle_library,
-                parameters=[data[0]]
-            )
-        else:
-            plugin.add_item(
-                title="Add to library",
-                subtitle="Add media to library",
-                method=plugin.cider.toggle_library,
-                parameters=[data[0]]
-            )
-        now_playing(plugin)
+    else:
+        results.append(
+            Result(title="Add to library", subtitle="Add media to library").add_action(actions.toggle_library, [attributes])
+        )
+    return results + now_playing(cider)

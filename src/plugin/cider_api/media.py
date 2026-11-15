@@ -17,6 +17,10 @@ class Media:
         return f"{self.name} by {self.artist_name}"
 
     @property
+    def attributes(self) -> Union[song.Attributes, album.Attributes]:
+        return self._attributes
+
+    @property
     def id(self) -> str:
         return self._attributes["playParams"]["id"]
 

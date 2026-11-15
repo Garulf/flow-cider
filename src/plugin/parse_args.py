@@ -17,9 +17,3 @@ def parse_args(input: str) -> Tuple[argparse.Namespace, List[argparse.Action]]:
                         help=f'Filter by [{"|".join(CHOICES)}]')
 
     return parser.parse_intermixed_args(input.split()), parser._actions
-
-
-if __name__ == "__main__":
-    args, actions = parse_args("test this :limit 10")
-    for item in actions:
-        print(item)

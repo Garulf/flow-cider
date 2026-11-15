@@ -1,4 +1,3 @@
-from main import FlowCider
+from main import plugin
 
-if __name__ == '__main__':
-    FlowCider()
+plugin.run()
