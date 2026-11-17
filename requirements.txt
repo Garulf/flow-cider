@@ -1,2 +1,2 @@
 pyflowlauncher[all]==1.2.2
-websocket-client==1.8.0
+websocket-client==1.9.2
