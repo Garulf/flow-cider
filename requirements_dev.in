@@ -1,5 +1,0 @@
-pytest
-flake8
-autopep8
-watchdog
-bump2version

@@ -6,8 +6,18 @@ FLAG_CHAR = ':'
 CHOICES = ["songs", "albums"]
 
 
+class QueryError(ValueError):
+    pass
+
+
+class QueryParser(argparse.ArgumentParser):
+
+    def error(self, message: str):
+        raise QueryError(message)
+
+
 def parse_args(input: str) -> Tuple[argparse.Namespace, List[argparse.Action]]:
-    parser = argparse.ArgumentParser(prefix_chars=FLAG_CHAR, add_help=False)
+    parser = QueryParser(prefix_chars=FLAG_CHAR, add_help=False)
     parser.add_argument('query', type=str, nargs='*',
                         help='Query to search for')
     parser.add_argument(':limit', type=int, default=20, nargs='?',
@@ -17,9 +27,3 @@ def parse_args(input: str) -> Tuple[argparse.Namespace, List[argparse.Action]]:
                         help=f'Filter by [{"|".join(CHOICES)}]')
 
     return parser.parse_intermixed_args(input.split()), parser._actions
-
-
-if __name__ == "__main__":
-    args, actions = parse_args("test this :limit 10")
-    for item in actions:
-        print(item)

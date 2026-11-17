@@ -1,0 +1,19 @@
+{
+  "keyword": "fc",
+  "query": "",
+  "icon": "../../data/icon.png",
+  "max_results": 1,
+  "selection": 0,
+  "results": [
+    {
+      "title": "Neon Harbor by The Lanterns",
+      "subtitle": "Now playing",
+      "cover": [
+        "#ff3d6e",
+        "#5b2a86"
+      ]
+    }
+  ],
+  "query_suggestion": "",
+  "show_caret": false
+}

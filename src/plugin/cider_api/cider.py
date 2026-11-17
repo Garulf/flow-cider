@@ -1,8 +1,7 @@
 import json
 import time
-from tracemalloc import start
 import webbrowser
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List
 
 import websocket
 from .media import Media
@@ -10,28 +9,39 @@ from .media import Media
 
 BASE_HOST = "127.0.0.1"
 BASE_PORT = 26369
+SEARCH_KINDS = ("songs", "albums")
+REQUEST_TIMEOUT = 10
 
 
 class Cider:
+    """Client for the websocket API of Cider 1.x (Cider Classic)."""
 
-    def __init__(self, host: str = BASE_HOST, port: int = BASE_PORT):
+    def __init__(self, host: str = BASE_HOST, port: int = BASE_PORT,
+                 connect: Callable[..., Any] = websocket.create_connection,
+                 timeout: float = REQUEST_TIMEOUT):
         self._host = host
         self._port = port
-        self._ws = websocket.WebSocket()
+        self._connect = connect
+        self.timeout = timeout
 
-    def _action(self, action: str, status: str = "generic", timeout: int = 30, **kwargs) -> Dict:
-        self._ws.connect(f"ws://{self._host}:{self._port}")
-        message = {"action": action, **kwargs}
-        self._ws.send(json.dumps(message))
-        start = time.time()
-        while True:
-            response = json.loads(self._ws.recv())
-            if response["type"] == status:
-                break
-            if time.time() - start > timeout:
-                raise TimeoutError("Timed out waiting for response")
-        self._ws.close()
-        return response
+    @property
+    def url(self) -> str:
+        return f"ws://{self._host}:{self._port}"
+
+    def _action(self, action: str, status: str = "generic", **kwargs) -> Dict:
+        ws = self._connect(self.url, timeout=self.timeout)
+        try:
+            ws.send(json.dumps({"action": action, **kwargs}))
+            deadline = time.monotonic() + self.timeout
+            while time.monotonic() < deadline:
+                response = json.loads(ws.recv())
+                if response["type"] == status:
+                    return response
+        except websocket.WebSocketTimeoutException:
+            pass
+        finally:
+            ws.close()
+        raise TimeoutError(f"Cider did not answer '{action}' within {self.timeout:g} seconds")
 
     def open(self) -> None:
         """Opens the Cider application"""
@@ -39,10 +49,11 @@ class Cider:
 
     def search(self, term: str, limit: int = 20) -> List[Media]:
         r = self._action("search", "searchResults", term=term, limit=limit)
-        media_items = []
-        if r["data"].get("songs") and r["data"].get("albums"):
-            media_items = r["data"]["songs"]["data"] + \
-                r["data"]["albums"]["data"]
+        media_items = [
+            item
+            for kind in SEARCH_KINDS
+            for item in r["data"].get(kind, {}).get("data", [])
+        ]
         return [Media(media_item["attributes"]) for media_item in media_items]
 
     def media_status(self) -> Dict[str, Any]:
@@ -116,8 +127,3 @@ class Cider:
         """Toggles a media item in the library"""
         self._library(media.play_params["kind"], media.id, not self.library_status(
             media)["data"]["inLibrary"])
-
-
-if __name__ == '__main__':
-    cider = Cider()
-    cider.open()

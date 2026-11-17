@@ -1,0 +1,35 @@
+{
+  "keyword": "fc",
+  "query": "harbor :type albums",
+  "icon": "../../data/icon.png",
+  "max_results": 3,
+  "selection": 0,
+  "results": [
+    {
+      "title": "Harbor Lights",
+      "subtitle": "by The Lanterns (album)",
+      "cover": [
+        "#ff3d6e",
+        "#5b2a86"
+      ]
+    },
+    {
+      "title": "Harbor Town",
+      "subtitle": "by Velvet Antenna (album)",
+      "cover": [
+        "#2ec4b6",
+        "#011627"
+      ]
+    },
+    {
+      "title": "Low Tide, High Harbor",
+      "subtitle": "by Marigold Coast (album)",
+      "cover": [
+        "#e9c46a",
+        "#264653"
+      ]
+    }
+  ],
+  "query_suggestion": "",
+  "show_caret": false
+}

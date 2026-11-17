@@ -1,0 +1,26 @@
+{
+  "keyword": "fc",
+  "query": "neon :",
+  "icon": "../../data/icon.png",
+  "max_results": 3,
+  "selection": 0,
+  "results": [
+    {
+      "title": ":limit",
+      "subtitle": "Limit of results to return for each type",
+      "icon": "../../data/icon.png"
+    },
+    {
+      "title": ":by",
+      "subtitle": "Filter by [artist]",
+      "icon": "../../data/icon.png"
+    },
+    {
+      "title": ":type",
+      "subtitle": "Filter by [songs|albums]",
+      "icon": "../../data/icon.png"
+    }
+  ],
+  "query_suggestion": "",
+  "show_caret": false
+}

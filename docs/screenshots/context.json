@@ -1,0 +1,36 @@
+{
+  "keyword": "fc",
+  "query": "neon",
+  "icon": "../../data/icon.png",
+  "max_results": 5,
+  "selection": 2,
+  "results": [
+    {
+      "title": "Play next",
+      "subtitle": "Add media to queue",
+      "icon": "../../data/icon.png"
+    },
+    {
+      "title": "Play later",
+      "subtitle": "Add media to end of queue",
+      "icon": "../../data/icon.png"
+    },
+    {
+      "title": "Love",
+      "subtitle": "Love this song",
+      "icon": "../../data/icon.png"
+    },
+    {
+      "title": "Dislike",
+      "subtitle": "Dislike this song",
+      "icon": "../../data/icon.png"
+    },
+    {
+      "title": "Add to library",
+      "subtitle": "Add media to library",
+      "icon": "../../data/icon.png"
+    }
+  ],
+  "query_suggestion": "",
+  "show_caret": false
+}
